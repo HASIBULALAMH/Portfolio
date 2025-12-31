@@ -29,7 +29,16 @@ class Project extends Model
         'is_featured'=>'boolean',
         'is_published'=>'boolean',
     ];
+    // get image attribute as full URL
+    protected $appends = ['image_url'];
 
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('storage/' . $this->image);
+        }
+        return null;
+    }
 
     //automatic slug generation
     public static function boot(){
@@ -41,22 +50,21 @@ class Project extends Model
             }
         });
     }
-
-    //schope for filtered projects with published
-
-    public function scopePublished($quary){
-        return $quary->where('is_published', true);
+    // get only published projects
+   public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
+    }
+        // get only featured projects
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
     }
 
-     //schope for filtered projects with featured
-
-    public function scopeFeatured($quary){
-        return $quary->where('is_featured', true);
-    }
-
-      //schope for filtered projects with ordered
-    public function schopeOrdered($quary){
-        return $quary->where('order', 'asc');
+    // get projects ordered by 'order' field ascending
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('order', 'asc');
     }
 
 }
